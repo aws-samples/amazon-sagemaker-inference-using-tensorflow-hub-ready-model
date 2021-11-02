@@ -11,8 +11,10 @@ RUN wget https://bootstrap.pypa.io/get-pip.py \
     && python get-pip.py
 
 WORKDIR /opt/ml/code
-COPY . /opt/ml/code
 
+COPY ./requirements.txt ./
 RUN pip install -r requirements.txt
 
-ENTRYPOINT [ "python" , "main.py" ]
+COPY ./inference.py /opt/ml/code/
+
+ENTRYPOINT [ "python" , "inference.py" ]

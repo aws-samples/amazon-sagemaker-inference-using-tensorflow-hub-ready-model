@@ -38,10 +38,10 @@ logger.addHandler(logging.StreamHandler(sys.stdout))
 # Flask app
 app = Flask(__name__)
 
-# Load tensor hub model
+# Load tensorflow hub model
 print("Loading model")
-module_handle = "https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1"
-detector = hub.load(module_handle).signatures['default']
+model = "https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1"
+detector = hub.load(model).signatures['default']
 print("Model loaded")
 
 
@@ -74,20 +74,6 @@ def download_s3_img(bucket_name, object_prefix, object_key):
     full_object_path = object_prefix + '/' + object_key
     s3 = boto3.client('s3')
     s3.download_file(bucket_name, full_object_path, object_key)
-    # Cant resize, I need to keep the object detection the same as the image received from the client
-    # new_width=256, new_height=256, new_quality=100
-    #
-    # logger.debug("downloaded image from s3")
-    # with open(image_file_name, 'rb') as image:
-    #     image_data = BytesIO(image.read())
-    # logger.debug("loading image")
-    # pil_image = Image.open(image_data)
-    # logger.debug("resizing image")
-    # pil_image = ImageOps.fit(pil_image, (new_width, new_height), Image.ANTIALIAS)
-    # logger.debug("converting image to RGB")
-    # pil_image_rgb = pil_image.convert("RGB")
-    # logger.debug("saving new image")
-    # pil_image_rgb.save(image_file_name, format="JPEG", quality=new_quality)
     return object_key
 
 
@@ -117,16 +103,6 @@ def delete_temp_image(file):
 @app.route('/ping')
 def ping():
     return "pong"
-
-
-@app.route('/')
-def home():
-    return "nothing here"
-
-
-@app.route('/robots.txt')
-def robots():
-    return "User-agent: * \n disallow /"
 
 
 @app.route('/invocations', methods=['GET', 'POST'])
