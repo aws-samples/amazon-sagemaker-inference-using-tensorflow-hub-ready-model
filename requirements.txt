@@ -1,0 +1,7 @@
+boto3
+flask
+six
+pillow
+json_logging
+tensorflow_gpu
+tensorflow_hub
